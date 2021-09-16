@@ -1,9 +1,6 @@
 package com.unla.kafka.server.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import lombok.Data;
 
@@ -21,4 +18,10 @@ public class Post {
 
 	private String text;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="user_id", nullable = false)
+	private User user;
+
+	public Post() {
+	}
 }
