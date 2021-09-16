@@ -27,8 +27,14 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public void newUser(String username, String name, String password){
+    public boolean newUser(String username, String name, String password) {
+        for(int i=0; i<getAll().size(); i++){
+            if(username.equals(getAll().get(i).getUsername())){
+                return false;
+            }
+        }
         userRepository.save(new User(username, name, password));
+        return true;
     }
 
     public boolean login(String username, String password){
