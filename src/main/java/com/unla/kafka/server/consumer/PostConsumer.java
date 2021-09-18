@@ -25,7 +25,7 @@ public class PostConsumer {
 	public void consumePost(String message) {
 		log.info("Nuevo post consumido de Kafka: ".concat(message));
 
-		log.info("Se va a serializar el mensaje recibido");
+		log.info("Se va a deserializar el mensaje recibido");
 		var post = readKafkaPost(message);
 
 		log.info("Se va a persistir un nuevo post");
@@ -36,7 +36,7 @@ public class PostConsumer {
 		try {
 			return objectMapper.readValue(message, Post.class);
 		} catch (JsonProcessingException ex) {
-			throw new RuntimeException("Error serializando mensaje de kafka: ".concat(message));
+			throw new RuntimeException("Error deserializando mensaje de kafka: ".concat(message));
 		}
 	}
 

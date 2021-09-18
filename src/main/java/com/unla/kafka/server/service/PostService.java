@@ -22,6 +22,8 @@ public class PostService {
 	}
 	
 	public List<Post> getFollowersPosts(Long userId){
+		log.info("Se van a consultar los posts del user id: {}", userId);
+		
 		var followersPosts = postRepository.getFollowersPosts(userId);
 		
 		log.info("Posts obtenidos: {}", followersPosts);
