@@ -11,7 +11,7 @@ import com.unla.kafka.server.model.Post;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 	
-	@Query(nativeQuery=true, value="SELECT * FROM post WHERE user_id IN (SELECT followers_id FROM user_followers WHERE user_id = :userId)")
+	@Query(nativeQuery=true, value="SELECT * FROM post WHERE user_id IN (SELECT following_id FROM follow WHERE follower_id = :userId)")
 	List<Post> getFollowersPosts(Long userId);
 
 }
