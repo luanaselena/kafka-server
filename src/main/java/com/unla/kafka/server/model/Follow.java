@@ -8,10 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Entity
+@Builder
 public class Follow {
 
 	@Id
@@ -26,4 +28,9 @@ public class Follow {
 	@JoinColumn(name = "followerId")
 	private User follower;
 
+	@Override
+	public String toString() {
+		return "Follow [id=" + id + ", following=" + following.getId() + ", follower=" + follower.getId() + "]";
+	}
+	
 }
