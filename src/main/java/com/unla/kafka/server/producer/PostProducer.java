@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PostProducer {
 
 	private static final String NOTICIAS_TOPIC = "noticias";
+	private static final String LIKES_TOPIC = "likes";
 
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplate;
@@ -31,6 +32,11 @@ public class PostProducer {
 
 		log.info("Se van a encolar en Kafka los posts: {}", jsonPosts);
 		kafkaTemplate.send(NOTICIAS_TOPIC, jsonPosts);
+	}
+	
+	public void produceLike(String like) {
+		log.info("Se va a encolar en Kafka el like: {}", like);
+		kafkaTemplate.send(LIKES_TOPIC, like);
 	}
 
 	private String serializePosts(List<Post> posts) {
