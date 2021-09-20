@@ -23,11 +23,11 @@ public class KafkaServerApplication {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
-			http.csrf().disable()
-					.authorizeRequests()
-					.antMatchers(HttpMethod.POST, "/newUser").permitAll()
-					.antMatchers(HttpMethod.GET, "/login").permitAll()
-					.anyRequest().authenticated();
+//			http.csrf().disable()
+//					.authorizeRequests()
+//					.antMatchers(HttpMethod.POST, "/newUser").permitAll()
+//					.antMatchers(HttpMethod.GET, "/login").permitAll()
+//					.anyRequest().authenticated();
 			http.cors();
 		}
 	}
