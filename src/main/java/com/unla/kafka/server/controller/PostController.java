@@ -36,10 +36,8 @@ public class PostController {
     public ResponseEntity<List<Post>> login(@RequestParam("username") String username) {
 		User user = userService.findByUsername(username);
 		Long userId = user.getId();
-		System.out.print(userId);
 		
 		var posts = postService.getFollowersPosts(userId);
-		System.out.print(posts);
 		
 		postProducer.producePosts(posts);
         return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
