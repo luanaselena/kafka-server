@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unla.kafka.server.model.Like;
 import com.unla.kafka.server.model.Post;
 import com.unla.kafka.server.model.User;
 import com.unla.kafka.server.producer.PostProducer;
@@ -34,6 +37,9 @@ public class PostController {
     
     @Autowired
 	private LikeService likeService;
+    
+    @Autowired
+	private ObjectMapper objectMapper;
 
     @GetMapping("/followers-post")
     public ResponseEntity<List<Post>> getFollowersPosts(@RequestParam("username") String username) {
@@ -53,9 +59,21 @@ public class PostController {
     	var user = userService.findByUsername(username);
 		var userId = user.getId();
     	
-    	likeService.save(postId, userId);    	
+    	var like = likeService.save(postId, userId); 
+    	
+    	var jsonLike = serializeLike(like);
+    	
+    	postProducer.produceLike(jsonLike);
     	
     	return new ResponseEntity<String>(Strings.EMPTY, HttpStatus.OK);
     }
+    
+    private String serializeLike(Like like) {
+		try {
+			return objectMapper.writeValueAsString(like);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Error serializando like: " + like);
+		}
+	}
 
 }
