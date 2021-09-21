@@ -30,5 +30,9 @@ public class PostService {
 		
 		return followersPosts;
 	}
+	
+	public List<Post> findByUserId(Long userId) {
+		return postRepository.findByUserId(userId);
+	}
 
 }

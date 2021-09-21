@@ -66,6 +66,19 @@ public class PostController {
         return new ResponseEntity<List<FollowersPostResponse>>(response, HttpStatus.OK);
     }
     
+    @GetMapping("/own-posts")
+    public ResponseEntity<List<Post>> getOwnPosts(
+    		@RequestParam("username") String username) {
+		User user = userService.findByUsername(username);
+		Long userId = user.getId();
+		
+		var posts = postService.findByUserId(userId);
+		
+		postProducer.produceOwnPosts(posts);
+		
+        return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
+    }
+    
     @PostMapping("/like")
     public ResponseEntity<String> saveLike(
     		@RequestParam("username") String username,
