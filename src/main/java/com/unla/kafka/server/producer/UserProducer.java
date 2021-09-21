@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unla.kafka.server.consumer.request.FollowRequest;
+import com.unla.kafka.server.model.Like;
 import com.unla.kafka.server.model.User;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ public class UserProducer {
 
 	private static final String FOLLOW_TOPIC = "follow";
 	private static final String USER_TOPIC = "user";
+	private static final String LIKE_TOPIC = "like";
 
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplate;
@@ -41,6 +43,12 @@ public class UserProducer {
 		kafkaTemplate.send(USER_TOPIC, jsonFollow);
 	}
 	
+	public void produceLikes(List<Like> likes) {
+		var jsonLikes = serializeLikes(likes);
+		
+		kafkaTemplate.send(LIKE_TOPIC, jsonLikes);
+	}
+	
 	private String serializeFollow(FollowRequest followRequest) {
 		try {
 			return objectMapper.writeValueAsString(followRequest);
@@ -54,6 +62,14 @@ public class UserProducer {
 			return objectMapper.writeValueAsString(users);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException("Error serializando users: " + users);
+		}
+	}
+	
+	private String serializeLikes(List<Like> likes) {
+		try {
+			return objectMapper.writeValueAsString(likes);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Error serializando likes: " + likes);
 		}
 	}
 }

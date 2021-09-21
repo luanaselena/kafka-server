@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unla.kafka.server.consumer.request.FollowRequest;
+import com.unla.kafka.server.model.Like;
 import com.unla.kafka.server.model.User;
 import com.unla.kafka.server.producer.UserProducer;
 import com.unla.kafka.server.service.FollowService;
@@ -74,5 +75,17 @@ public class UserController {
     	userProducer.produceFollow(followRequest);    	
     	
     	return new ResponseEntity<String>(Strings.EMPTY, HttpStatus.OK);
+    }
+    
+    @GetMapping("/likes")
+    public ResponseEntity<List<Like>> getLikes(
+    		@RequestParam("username") String username){
+    	User user = userService.findByUsername(username);
+    	
+    	var likes = userService.getLikes(user.getId());
+    	
+    	userProducer.produceLikes(likes);
+    	
+        return new ResponseEntity<List<Like>>(likes,HttpStatus.OK);
     }
 }

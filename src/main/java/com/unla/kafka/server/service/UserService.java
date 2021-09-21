@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.unla.kafka.server.model.Like;
+import com.unla.kafka.server.model.Post;
 import com.unla.kafka.server.model.User;
+import com.unla.kafka.server.repository.LikeRepository;
+import com.unla.kafka.server.repository.PostRepository;
 import com.unla.kafka.server.repository.UserRepository;
 
 @Service("userService")
@@ -17,6 +21,12 @@ public class UserService {
     @Qualifier("userRepository")
     private UserRepository userRepository;
 
+    @Autowired
+    private LikeRepository likeRepository;
+    
+    @Autowired
+    private PostRepository postRepository;
+    
     public List<User> getAll(){
         return userRepository.findAll();
     }
@@ -43,6 +53,31 @@ public class UserService {
     		);
     	
     	return usersListResponse;
+    }
+    
+    public List<Like> getLikes(Long userId){
+    	List<Like> likes = likeRepository.getLikes(userId);
+    	
+    	List<Like> likesResponse = new ArrayList<>();
+    	likes.forEach(
+    			like -> {
+    				var user = new User();
+    				user.setId(userRepository.findById(like.getUserLike().getId()).getId());
+    				user.setUsername(userRepository.findById(like.getUserLike().getId()).getUsername());    
+    				var post = new Post();
+    				post.setId(postRepository.findById(like.getPost().getId()).get().getId());
+    				post.setImage(postRepository.findById(like.getPost().getId()).get().getImage());
+    				post.setText(postRepository.findById(like.getPost().getId()).get().getText());
+    				post.setTitle(postRepository.findById(like.getPost().getId()).get().getTitle());
+    				var likeResponse = Like.builder()
+    						.id(like.getId())
+    						.userLike(user)
+    						.post(post)
+    						.build();    				
+    				likesResponse.add(likeResponse);
+    			});
+    	
+    	return likesResponse;
     }
 
     public boolean newUser(String username, String name, String password) {
