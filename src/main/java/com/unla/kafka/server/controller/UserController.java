@@ -48,6 +48,18 @@ public class UserController {
         return new ResponseEntity<List<User>>(userService.getAll(),HttpStatus.OK);
     }
     
+    @GetMapping("/getFollowingUsers")
+    public ResponseEntity<List<User>> getFollowingUsers(
+    		@RequestParam("username") String username){
+    	User user = userService.findByUsername(username);
+    	
+    	List<User> followingUsers = userService.getFollowingUsers(user.getId());
+    	
+    	userProducer.produceFollowingUsers(followingUsers);
+    	
+        return new ResponseEntity<List<User>>(followingUsers,HttpStatus.OK);
+    }
+    
     @PostMapping("/follow")
     public ResponseEntity<String> saveFollow(
     		@RequestParam("followingId") Long followingId,

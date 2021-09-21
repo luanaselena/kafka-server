@@ -65,4 +65,8 @@ public class UserService {
         }
         return false;
     }
+    
+    public List<User> getFollowingUsers(Long userId){
+    	return userRepository.getFollowingUsers(userId);
+    }
 }
