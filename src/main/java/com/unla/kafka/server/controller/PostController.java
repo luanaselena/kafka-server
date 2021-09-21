@@ -33,7 +33,7 @@ public class PostController {
     private UserService userService;
 
     @GetMapping("/followers-post")
-    public ResponseEntity<List<Post>> login(@RequestParam("username") String username) {
+    public ResponseEntity<List<Post>> getFollowersPosts(@RequestParam("username") String username) {
 		User user = userService.findByUsername(username);
 		Long userId = user.getId();
 		
