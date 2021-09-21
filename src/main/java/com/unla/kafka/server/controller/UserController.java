@@ -49,6 +49,20 @@ public class UserController {
         return new ResponseEntity<List<User>>(userService.getAll(),HttpStatus.OK);
     }
     
+    //Traer usuarios seguidos
+    @GetMapping("/getFollowers")
+    public ResponseEntity<List<User>> getFollowers(
+    		@RequestParam("username") String username){
+    	User user = userService.findByUsername(username);
+    	
+    	List<User> followerUsers = userService.getFollowers(user.getId());
+    	
+    	userProducer.produceFollowerUsers(followerUsers);
+    	
+        return new ResponseEntity<List<User>>(followerUsers,HttpStatus.OK);
+    }
+    
+    //Traer usuarios que me siguen
     @GetMapping("/getFollowingUsers")
     public ResponseEntity<List<User>> getFollowingUsers(
     		@RequestParam("username") String username){

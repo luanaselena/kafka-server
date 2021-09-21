@@ -20,4 +20,7 @@ public interface UserRepository extends JpaRepository<User, Serializable> {
     
     @Query(nativeQuery=true, value="SELECT * FROM user WHERE id IN (SELECT following_id FROM follow WHERE follower_id = :userId)")
     public abstract List<User> getFollowingUsers(Long userId);
+    
+    @Query(nativeQuery=true, value="SELECT * FROM user WHERE id IN (SELECT follower_id FROM follow WHERE following_id = :userId)")
+    public abstract List<User> getFollowers(Long userId);
 }

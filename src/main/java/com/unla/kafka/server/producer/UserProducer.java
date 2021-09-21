@@ -20,6 +20,7 @@ public class UserProducer {
 
 	private static final String FOLLOW_TOPIC = "follow";
 	private static final String USER_TOPIC = "user";
+	private static final String USER_FOLLOWERS_TOPIC = "user-followers";
 	private static final String LIKE_TOPIC = "like";
 
 	@Autowired
@@ -41,6 +42,12 @@ public class UserProducer {
 		var jsonFollow = serializeUsers(users);
 		
 		kafkaTemplate.send(USER_TOPIC, jsonFollow);
+	}
+	
+	public void produceFollowerUsers(List<User> users) {
+		var jsonFollow = serializeUsers(users);
+		
+		kafkaTemplate.send(USER_FOLLOWERS_TOPIC, jsonFollow);
 	}
 	
 	public void produceLikes(List<Like> likes) {

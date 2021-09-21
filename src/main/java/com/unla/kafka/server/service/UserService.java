@@ -104,4 +104,8 @@ public class UserService {
     public List<User> getFollowingUsers(Long userId){
     	return userRepository.getFollowingUsers(userId);
     }
+    
+    public List<User> getFollowers(Long userId){
+    	return userRepository.getFollowers(userId);
+    }
 }
