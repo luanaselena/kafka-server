@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unla.kafka.server.controller.response.FollowersPostResponse;
 import com.unla.kafka.server.model.Like;
+import com.unla.kafka.server.model.Post;
 import com.unla.kafka.server.model.User;
 import com.unla.kafka.server.producer.PostProducer;
 import com.unla.kafka.server.service.LikeService;
@@ -80,6 +81,25 @@ public class PostController {
     	
     	return new ResponseEntity<String>(Strings.EMPTY, HttpStatus.OK);
     }
+    
+    @PostMapping("/post")
+    public ResponseEntity<String> savePost(
+    		@RequestParam("username") String username,
+    		@RequestParam("title") String title,
+    		@RequestParam("text") String text,
+    		@RequestParam("image") String image){
+    	
+    	var post = new Post();
+    	post.setUsername(username);
+    	post.setTitle(title);
+    	post.setText(text);
+    	post.setImage(image);
+    	post.setUser(userService.findByUsername(username));
+    	
+    	postService.save(post);
+    	
+    	return new ResponseEntity<String>(Strings.EMPTY, HttpStatus.OK);
+    } 
     
     private String serializeLike(Like like) {
 		try {
