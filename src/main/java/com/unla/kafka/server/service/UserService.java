@@ -1,12 +1,14 @@
 package com.unla.kafka.server.service;
 
-import com.unla.kafka.server.model.User;
-import com.unla.kafka.server.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.unla.kafka.server.model.User;
+import com.unla.kafka.server.repository.UserRepository;
 
 @Service("userService")
 public class UserService {
@@ -25,6 +27,22 @@ public class UserService {
 
     public User findByUsername(String username){
         return userRepository.findByUsername(username);
+    }
+    
+    public List<User> getLikedsUsers(Long postId){
+    	List<User> users = userRepository.getLikedsUsers(postId);
+    	
+    	List<User> usersListResponse = new ArrayList<>();
+    	users.forEach(
+    			persistUser -> {
+    				var user = new User();
+    				user.setId(persistUser.getId());
+    				user.setUsername(persistUser.getUsername());
+    				usersListResponse.add(user);
+    			}    			
+    		);
+    	
+    	return usersListResponse;
     }
 
     public boolean newUser(String username, String name, String password) {

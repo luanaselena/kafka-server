@@ -1,5 +1,6 @@
 package com.unla.kafka.server.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.util.Strings;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unla.kafka.server.controller.response.FollowersPostResponse;
 import com.unla.kafka.server.model.Like;
-import com.unla.kafka.server.model.Post;
 import com.unla.kafka.server.model.User;
 import com.unla.kafka.server.producer.PostProducer;
 import com.unla.kafka.server.service.LikeService;
@@ -42,14 +43,26 @@ public class PostController {
 	private ObjectMapper objectMapper;
 
     @GetMapping("/followers-post")
-    public ResponseEntity<List<Post>> getFollowersPosts(@RequestParam("username") String username) {
+    public ResponseEntity<List<FollowersPostResponse>> getFollowersPosts(@RequestParam("username") String username) {
 		User user = userService.findByUsername(username);
 		Long userId = user.getId();
 		
 		var posts = postService.getFollowersPosts(userId);
-		
 		postProducer.producePosts(posts);
-        return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
+		
+		List<FollowersPostResponse> response = new ArrayList<>();
+		posts.forEach(
+				post -> {
+					FollowersPostResponse follower = FollowersPostResponse.builder()
+									.post(post)
+									.likedsUsers(userService.getLikedsUsers(post.getId()))
+									.build();
+					
+					response.add(follower);					
+				}
+			);
+		
+        return new ResponseEntity<List<FollowersPostResponse>>(response, HttpStatus.OK);
     }
     
     @PostMapping("/like")
