@@ -49,7 +49,7 @@ public class UserController {
         return new ResponseEntity<List<User>>(userService.getAll(),HttpStatus.OK);
     }
     
-    //Traer usuarios seguidos
+    //Traer usuarios que me siguen
     @GetMapping("/getFollowers")
     public ResponseEntity<List<User>> getFollowers(
     		@RequestParam("username") String username){
@@ -62,7 +62,7 @@ public class UserController {
         return new ResponseEntity<List<User>>(followerUsers,HttpStatus.OK);
     }
     
-    //Traer usuarios que me siguen
+    //Traer usuarios seguidos
     @GetMapping("/getFollowingUsers")
     public ResponseEntity<List<User>> getFollowingUsers(
     		@RequestParam("username") String username){
@@ -78,7 +78,9 @@ public class UserController {
     @PostMapping("/follow")
     public ResponseEntity<String> saveFollow(
     		@RequestParam("followingId") Long followingId,
-    		@RequestParam("followerId") Long followerId){
+    		@RequestParam("followerUsername") String followerUsername){
+    	
+    	Long followerId = userService.findByUsername(followerUsername).getId();
     	
     	followService.save(followerId, followingId);
     	
