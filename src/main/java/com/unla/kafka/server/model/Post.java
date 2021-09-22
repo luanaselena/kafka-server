@@ -1,5 +1,6 @@
 package com.unla.kafka.server.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -20,8 +21,10 @@ public class Post {
 
 	private String title;
 
+	@Column(length = 100000)
 	private String image;
 
+	@Column(length = 100000)
 	private String text;
 
 	private String username;
