@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unla.kafka.server.controller.response.FollowersPostResponse;
+import com.unla.kafka.server.controller.response.OwnPostResponse;
 import com.unla.kafka.server.model.Like;
 import com.unla.kafka.server.model.Post;
 import com.unla.kafka.server.model.User;
@@ -67,16 +68,27 @@ public class PostController {
     }
     
     @GetMapping("/own-posts")
-    public ResponseEntity<List<Post>> getOwnPosts(
+    public ResponseEntity<List<OwnPostResponse>> getOwnPosts(
     		@RequestParam("username") String username) {
 		User user = userService.findByUsername(username);
 		Long userId = user.getId();
 		
-		var posts = postService.findByUserId(userId);
-		
+		var posts = postService.findByUserId(userId);		
 		postProducer.produceOwnPosts(posts);
 		
-        return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
+		List<OwnPostResponse> response = new ArrayList<>();
+		posts.forEach(
+				post -> {
+					OwnPostResponse ownPost = OwnPostResponse.builder()
+									.post(post)
+									.likedsUsers(userService.getLikedsUsers(post.getId()))
+									.build();
+					
+					response.add(ownPost);					
+				}
+			);
+		
+        return new ResponseEntity<List<OwnPostResponse>>(response, HttpStatus.OK);
     }
     
     @PostMapping("/like")
