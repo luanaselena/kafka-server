@@ -1,0 +1,17 @@
+USE socialnetworkdb;
+
+INSERT INTO `user` VALUES 
+	(1, "Marta", "martita123", "martita123"), (2, "Carlos", "carlitos123", "carlitos123"), (3, "Laura", "laurita123", "laurita123"),
+    (4, "Juan", "juancito123", "juancito123");
+    
+INSERT INTO `post` VALUES
+	(1, "https://media.discordapp.net/attachments/629131886576271366/890386278221238302/gato-marron_0.png?width=377&height=283", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at maximus massa. Vivamus sapien elit, dignissim at sagittis sit amet, dapibus ac mauris. Nam dui ex, ultrices ac velit vel, feugiat lacinia ante. Aliquam tempus eros nibh, quis consectetur erat lacinia vel. Aliquam erat volutpat. Nullam velit erat, interdum ac arcu a, hendrerit ultricies ipsum. Aenean sed viverra ante, vitae mollis nibh. Phasellus purus mauris, laoreet et purus nec, lobortis hendrerit augue. Sed posuere metus id magna egestas, id tincidunt enim elementum. Pellentesque eget lobortis arcu. Vivamus condimentum nec metus et finibus. Nulla facilisi. Quisque eget dui eu sem placerat suscipit at id erat. Pellentesque eget tincidunt dolor. Phasellus pretium purus fringilla elit placerat luctus. Sed eu interdum ligula. Aliquam ex augue, rhoncus vel risus et, vestibulum accumsan nibh. Suspendisse placerat ultricies mauris, ut pharetra sapien lacinia eu."
+, "Gatitos hermosos", "martita123", 1),
+	(2, "https://media.discordapp.net/attachments/629131886576271366/890386330457104384/90.png?width=493&height=283", "Sed ornare augue et ultricies tincidunt. In nisl dolor, laoreet eu nisl et, feugiat dignissim arcu. Ut laoreet consectetur erat sed scelerisque. Vivamus sit amet magna justo. Nam nec mi ex. Nunc pharetra malesuada nisl, in maximus nibh ullamcorper eu. Quisque vitae varius libero, eget venenatis justo. Vestibulum imperdiet ex ut pharetra imperdiet. Pellentesque lacinia diam quis justo gravida, id lobortis mauris molestie.", "Perro lindo roba corazon", "carlitos123", 2),
+	(3, "https://media.discordapp.net/attachments/629131886576271366/890386558430093322/FPSPLRS3U7MKJL6G6UI24DPANU.png?width=504&height=283", "Pellentesque lacinia diam quis justo gravida, id lobortis mauris molestie. Suspendisse pulvinar feugiat sodales. Sed a felis ut eros volutpat vehicula. Nullam non dignissim eros. Maecenas id nisi hendrerit, volutpat arcu sed, congue lectus. Aliquam pharetra vel magna non tempus. Phasellus sodales molestie odio, eget lacinia nisi mollis sit amet. Curabitur ut molestie mi, id commodo mauris."
+    ,"Obelisco, presencia Argentina", "laurita123", 3),
+    (4, "https://media.discordapp.net/attachments/629131886576271366/890386792136728626/2019-nCoV-CDC-23312.png?width=298&height=283", "Nullam tincidunt molestie elit, ac rhoncus justo egestas a. Aliquam finibus ex vestibulum ipsum hendrerit, cursus mollis tellus consectetur. Integer varius tempus interdum. Nulla rutrum nibh at odio imperdiet mollis. Aliquam iaculis ipsum non felis varius auctor. Proin ac dictum neque. Nunc turpis enim, vehicula ut molestie ut, posuere blandit ante. Sed vestibulum viverra purus fringilla ullamcorper."
+    ,"El bicho ataca de nuevo", "juancito123", 4);
+
+INSERT INTO `follow` VALUES
+	(1, 1, 4), (2, 1, 2), (3, 2, 4), (4, 2, 1), (5, 3, 2);
