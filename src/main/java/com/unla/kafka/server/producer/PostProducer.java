@@ -1,14 +1,15 @@
 package com.unla.kafka.server.producer;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unla.kafka.server.model.Like;
 import com.unla.kafka.server.model.Post;
+import com.unla.kafka.server.repository.PostRepository;
+import com.unla.kafka.server.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 public class PostProducer {
 
 	private static final String NOTICIAS_TOPIC = "noticias";
-	private static final String MY_POSTS = "my-posts";
 	private static final String LIKES_TOPIC = "likes";
 
 	@Autowired
@@ -26,31 +26,45 @@ public class PostProducer {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	public void producePosts(List<Post> posts) {
-		log.info("Se van a serializar los posts");
-		var jsonPosts = serializePosts(posts);
-		log.info("Post serializados: {}", jsonPosts);
+	@Autowired
+	private PostRepository postRepository;
 
-		log.info("Se van a encolar en Kafka los posts: {}", jsonPosts);
-		kafkaTemplate.send(NOTICIAS_TOPIC, jsonPosts);
-	}
-	
-	public void produceOwnPosts(List<Post> posts) {
-		var jsonPosts = serializePosts(posts);
-		
-		kafkaTemplate.send(MY_POSTS, jsonPosts);
-	}
-	
-	public void produceLike(String like) {
-		log.info("Se va a encolar en Kafka el like: {}", like);
-		kafkaTemplate.send(LIKES_TOPIC, like);
+	@Autowired
+	private UserRepository userRepository;
+
+	public void producePost(Post post) {
+		log.info("Se va a serializar el post: {}", post);
+		var jsonPost = serializePost(post);
+
+		log.info("Se va a encolar en Kafka el post: {}", jsonPost);
+		kafkaTemplate.send(NOTICIAS_TOPIC, jsonPost);
 	}
 
-	private String serializePosts(List<Post> posts) {
+	public void produceLike(Long postId, Long userLikeId) {
+		var like = Like.builder()
+				.post(postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post no encontrado")))
+				.userLike(userRepository.findById(userLikeId)).build();
+
+		log.info("Se va a serializar el like: {}", like);
+		var jsonLike = serializeLike(like);
+
+		log.info("Se va a encolar en Kafka el like: {}", jsonLike);
+		kafkaTemplate.send(LIKES_TOPIC, jsonLike);
+	}
+
+	private String serializePost(Post post) {
 		try {
-			return objectMapper.writeValueAsString(posts);
+			return objectMapper.writeValueAsString(post);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Error serializando posts: " + posts);
+			throw new RuntimeException("Error serializando post: " + post);
+		}
+	}
+
+	private String serializeLike(Like like) {
+		try {
+			return objectMapper.writeValueAsString(like);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Error serializando like: " + like);
 		}
 	}
 

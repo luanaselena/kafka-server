@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unla.kafka.server.consumer.request.FollowRequest;
-import com.unla.kafka.server.producer.UserProducer;
+import com.unla.kafka.server.model.Follow;
 import com.unla.kafka.server.service.FollowService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,33 +14,30 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class UserConsumer {
-	
+
+	private static final String FOLLOW_TOPIC = "follow";
+
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	@Autowired
 	private FollowService followService;
-	
-	@Autowired
-	private UserProducer userProducer;
-	
-	@KafkaListener(topics = "followed", groupId = "user")
+
+	@KafkaListener(topics = FOLLOW_TOPIC, groupId = "user")
 	public void consumeFollow(String message) {
 		log.info("Nuevo follow consumido de Kafka: ".concat(message));
 
 		log.info("Se va a deserializar el mensaje recibido");
-		var followRequest = readKafkaFollow(message);
-		log.info("Follow deserializado: {}", followRequest);
+		var follow = readKafkaFollow(message);
+		log.info("Follow deserializado: {}", follow);
 
 		log.info("Se va a persistir un nuevo follow");
-		followService.save(followRequest.getFollowerId(), followRequest.getFollowingId());
-		
-		userProducer.produceFollow(followRequest);				
+		followService.save(follow);
 	}
-	
-	private FollowRequest readKafkaFollow(String message) {
+
+	private Follow readKafkaFollow(String message) {
 		try {
-			return objectMapper.readValue(message, FollowRequest.class);
+			return objectMapper.readValue(message, Follow.class);
 		} catch (JsonProcessingException ex) {
 			throw new RuntimeException("Error deserializando mensaje de kafka: ".concat(message));
 		}

@@ -1,6 +1,5 @@
 package com.unla.kafka.server.controller.response;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.unla.kafka.server.model.Post;
@@ -15,6 +14,6 @@ public class FollowersPostResponse {
 	
 	private Post post;
 	
-	private List<User> likedsUsers = new ArrayList<>();
+	private List<User> likedsUsers;
 
 }
