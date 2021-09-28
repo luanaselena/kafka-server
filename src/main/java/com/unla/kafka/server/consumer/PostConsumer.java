@@ -10,6 +10,7 @@ import com.unla.kafka.server.model.Like;
 import com.unla.kafka.server.model.Post;
 import com.unla.kafka.server.service.LikeService;
 import com.unla.kafka.server.service.PostService;
+import com.unla.kafka.server.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +29,9 @@ public class PostConsumer {
 
 	@Autowired
 	private LikeService likeService;
+	
+	@Autowired
+	private UserService userService;
 
 	@KafkaListener(topics = NOTICIAS_TOPIC, groupId = "post")
 	public void consumePost(String message) {
@@ -35,6 +39,8 @@ public class PostConsumer {
 
 		log.info("Se va a deserializar el mensaje recibido");
 		var post = readKafkaPost(message);
+		log.info("Se va a obtener el User de la db");
+		post.setUser(userService.findByUsername(post.getUsername()));
 
 		log.info("Se va a persistir el nuevo post: {}", post);
 		postService.save(post);

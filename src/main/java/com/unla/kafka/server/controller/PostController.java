@@ -45,7 +45,6 @@ public class PostController {
 		post.setTitle(title);
 		post.setText(text);
 		post.setImage(image);
-		post.setUser(userService.findByUsername(username));
 
 		postProducer.producePost(post);
 
